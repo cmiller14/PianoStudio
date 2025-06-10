@@ -1,8 +1,28 @@
 import React from 'react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import { useEffect, useState } from 'react';
 
 function About() {
+
+    const [messages, setMessages] = useState(null);
+    
+    useEffect(() => {
+    fetch('http://localhost:3000/about/messages')
+        .then((res) => {
+        if (!res.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return res.json();
+        })
+        .then((json) => {
+        setMessages(json); // Store the JSON in state
+        })
+        .catch((error) => {
+        console.error('Error fetching data:', error);
+        });
+    }, []);
+
   return (
     <>
         <Navigation/>
@@ -28,12 +48,12 @@ function About() {
                 <div className="row gx-4 gx-lg-5 align-items-center mb-5"> <div className="col-md-5"> <img className="img-fluid rounded mb-4 mb-md-0" src="assets/img/fam_pic.jpeg" alt="[Lisa Miller and family]" />
                     </div>
                     <div className="col-md-7"> <p>
-                        Based in Bountiful, Utah, Lisa is a foundational figure in the studio, bringing over two decades of dedicated experience and a genuine passion for introducing the joy of piano to young learners. Her lifelong connection with the piano began in her own childhood, where she built a strong musical foundation through extensive lessons and study with talented professional instructors. This rich history and love for the instrument inspire her work teacahing musical talent to the next generation.
+                        {messages?.message1}
                     </p>
                     </div>
                 </div>
-                <p>At Lisa Miller Piano Studio, the primary focus is on fostering a positive and encouraging environment where young learners can develop a deep love for music and unlock their creativity. Private lessons, tailored to each student's pace and goals, are typically 30 to 45 minutes in length and are scheduled once or twice per week. </p>
-                <p>In addition to individual instruction, group classes are held periodically, often before recitals, to build ensemble skills and confidence. Students also have the option to participate in events such as the Federation piano competition for performance and evaluation opportunities.</p>
+                <p>{messages?.message2}</p>
+                <p>{messages?.message3}</p>
                 </div>
             </div>
             </div>

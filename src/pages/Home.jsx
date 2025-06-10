@@ -3,8 +3,26 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navigation from '../components/Navigation';
 import Header from '../components/header';
 import Footer from '../components/Footer';
+import { useEffect, useState } from 'react';
+
 
 export default function Home() {
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    fetch('/home/messages') // Adjust this URL as needed
+      .then((res) => res.json())
+      .then((data) => {
+        setMessage(data.message);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error('Error fetching data:', err);
+      });
+  }, []);
+
+
+
   return (
     <>
     <Navigation/>
