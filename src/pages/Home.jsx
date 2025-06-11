@@ -4,22 +4,22 @@ import Navigation from '../components/Navigation';
 import Header from '../components/header';
 import Footer from '../components/Footer';
 import { useEffect, useState } from 'react';
+import { useApi } from '../utils/use_api';
 
 
 export default function Home() {
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    fetch('/home/messages') // Adjust this URL as needed
-      .then((res) => res.json())
-      .then((data) => {
-        setMessage(data.message);
-        console.log(data);
-      })
-      .catch((err) => {
-        console.error('Error fetching data:', err);
-      });
-  }, []);
+    const api = useApi();
+    
+    useEffect(() => {
+        getMessages()
+    }, []);
+
+    async function getMessages() {
+        const data = await api.get("http://localhost:3000/home/messages");
+        setMessage(data);
+    }
 
 
 

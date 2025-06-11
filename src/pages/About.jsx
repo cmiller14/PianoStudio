@@ -2,26 +2,23 @@ import React from 'react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import { useEffect, useState } from 'react';
+import { useApi } from '../utils/use_api';
 
 function About() {
 
     const [messages, setMessages] = useState(null);
+
+    const api = useApi();
     
     useEffect(() => {
-    fetch('http://localhost:3000/about/messages')
-        .then((res) => {
-        if (!res.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return res.json();
-        })
-        .then((json) => {
-        setMessages(json); // Store the JSON in state
-        })
-        .catch((error) => {
-        console.error('Error fetching data:', error);
-        });
+        getMessages()
     }, []);
+
+    async function getMessages() {
+        const message = await api.get("http://localhost:3000/about/messages");
+        setMessages(message);
+        console.log(message);
+    }
 
   return (
     <>

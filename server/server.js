@@ -18,7 +18,7 @@ const home_messages = {
 
 const header_messages = {
     title: "Lisa Miller Piano Studio",
-    subHeader: "Welcome to your studio home base! ",
+    subHeader: "Welcome to your studio home base!",
     about: "Check here for scheduling purposes, recital info, and links to resources you will use throughout the year."
 
 }
@@ -29,7 +29,11 @@ app.get('/about/messages', (req, res) => {
 });
 
 app.get("/header/messages", (req, res) => {
-    resizeTo.json(header_messages);
+    res.json(header_messages);
+})
+
+app.get("/home/messages", (req, res) => {
+    res.json(home_messages);
 })
 
 app.listen(PORT, () => {
