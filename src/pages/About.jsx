@@ -11,14 +11,16 @@ function About() {
     const api = useApi();
     
     useEffect(() => {
-        getMessages()
+        getMessages();
     }, []);
 
     async function getMessages() {
-        const message = await api.get("http://localhost:3000/about/messages");
-        setMessages(message);
-        console.log(message);
+        const message = await api.get("http://localhost:3000/api/messages/type/about");
+        const mapped = Object.fromEntries(message.map(msg => [msg.name, msg.message]));
+        setMessages(mapped);
     }
+
+
 
   return (
     <>
@@ -45,12 +47,12 @@ function About() {
                 <div className="row gx-4 gx-lg-5 align-items-center mb-5"> <div className="col-md-5"> <img className="img-fluid rounded mb-4 mb-md-0" src="assets/img/fam_pic.jpeg" alt="[Lisa Miller and family]" />
                     </div>
                     <div className="col-md-7"> <p>
-                        {messages?.message1}
+                        {messages?.about_message_1}
                     </p>
                     </div>
                 </div>
-                <p>{messages?.message2}</p>
-                <p>{messages?.message3}</p>
+                <p>{messages?.about_message_2}</p>
+                <p>{messages?.about_message_3}</p>
                 </div>
             </div>
             </div>

@@ -1,8 +1,25 @@
 import React from 'react';
 import Footer from '../components/Footer';
 import Navigation from '../components/Navigation';
+import { useEffect, useState } from 'react';
+import { useApi } from '../utils/use_api';
+
 
 function ContactInfo() {
+
+    const [messages, setMessages] = useState(null);
+
+    const api = useApi();
+
+    useEffect(() => {
+        getMessages();
+    }, []);
+
+    async function getMessages() {
+        const message = await api.get("http://localhost:3000/api/messages/type/contact");
+        const mapped = Object.fromEntries(message.map(msg => [msg.name, msg.message]));
+        setMessages(mapped);
+    }
   return (
     <>
         <Navigation/>
@@ -26,10 +43,10 @@ function ContactInfo() {
             <div className="row gx-4 gx-lg-5 justify-content-center">
                 <div className="col-md-10 col-lg-8 col-xl-7">
                 <p>
-                    Have questions about lessons, availability, or anything else regarding the studio? Please feel free to reach out using the contact methods below. We look forward to hearing from you!
+                    {messages?.contact_about}
                 </p>
                 <h4 className="mt-4">Contact Lisa Miller</h4> <p>
-                    <strong>Email:</strong> <a href="mailto:your.email@example.com">pianomom.2025@gmail.com</a>
+                    <strong>Email:</strong> <a href="mailto:your.email@example.com">messages?.contact_email</a>
                 </p>
                 </div>
             </div>

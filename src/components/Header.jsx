@@ -12,8 +12,9 @@ function Header() {
     }, []);
 
     async function getMessages() {
-        const data = await api.get("http://localhost:3000/header/messages");
-        setMessages(data);
+        const message = await api.get("http://localhost:3000/api/messages/type/header");
+        const mapped = Object.fromEntries(message.map(msg => [msg.name, msg.message]));
+        setMessages(mapped);
     }
 
   return (
@@ -24,9 +25,9 @@ function Header() {
         <div className="row gx-4 gx-lg-5 justify-content-center">
         <div className="col-md-10 col-lg-8 col-xl-7">
             <div className="site-heading">
-            <h1>{messages?.title}</h1>
-            <span className="subheading">{messages?.subHeader} </span>
-            <p>{messages?.about}</p>
+            <h1>{messages?.header_message_title}</h1>
+            <span className="subheading">{messages?.header_message_subtitle} </span>
+            <p>{messages?.header_message_about}</p>
             </div>
         </div>
         </div>
