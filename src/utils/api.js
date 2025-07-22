@@ -1,6 +1,11 @@
 import { createContext } from "react";
 
 export class Api {
+  authToken = null;
+
+  constructor(initialToken) {
+    this.authToken = initialToken
+  }
 
   async makeRequest(url, method, body) {
     const options = {};
@@ -11,6 +16,7 @@ export class Api {
     const res = await fetch(url, {
       method,
       headers: {
+        Authorization: `Bearer ${this.authToken}`,
         'Content-Type': 'application/json',
       },
       ...options,

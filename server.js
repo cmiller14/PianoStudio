@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import messageRoutes from './server/routes/messages.js';
+import authRoutes from './server/routes/auth.js';
 
 const app = express();
 const PORT = 3000;
@@ -8,7 +9,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-
+app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 
 
