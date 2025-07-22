@@ -1,7 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+import { setAuthToken } from "../store/application_slice";
+
 
 function Navigation() {
+
+  const role = useSelector(state => state.application.settings?.role);
+  const authToken = useSelector(state => state.application.authToken);
+  const isLoggedIn = useSelector((state) => !!state.application.authToken);
+  const dispatch = useDispatch();
+  const isAdmin = role === "admin";
+  console.log(isAdmin);
+  console.log(role);
+
+  function logout() {
+    dispatch(setAuthToken(null));
+  }
+
   return (
     <>
         {/* Navigation*/}
@@ -19,6 +35,14 @@ function Navigation() {
                 <li className="nav-item"><Link className="nav-link px-lg-3 py-3 py-lg-4" to="/about">About</Link></li>
                 <li className="nav-item"><Link className="nav-link px-lg-3 py-3 py-lg-4" to="/contact">Contact</Link></li>
                 <li className='nav-item'><Link className='nav-link px-lg-3 py-3 py-lg-4' to="/login">Login</Link></li>
+                {isAdmin && isLoggedIn && (
+                    <li className='nav-item'><Link className='nav-link px-lg-3 py-3 py-lg-4' to="/">Admin</Link></li>
+                )}
+                {isLoggedIn && (
+                    <li className='nav-item'><Link className='nav-link px-lg-3 py-3 py-lg-4' onClick={logout}>Logout</Link></li>
+                )}
+                
+
             </ul>
             </div>
         </div>

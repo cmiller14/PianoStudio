@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 import { setAuthToken } from '../store/application_slice';
 import { useApi } from '../utils/use_api';
-import { useNavigate } from "react-router-dom";
+import Navigation from '../components/Navigation';
+import Footer from '../components/Footer';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,10 +17,10 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const {token} = await api.post('http://localhost:3000/api/auth/login', {
-        "name": email,
-        "email": email,
-        "password": password,
+      const { token } = await api.post('http://localhost:3000/api/auth/login', {
+        name: email,
+        email,
+        password,
       });
       dispatch(setAuthToken(token));
       navigate('/');
@@ -28,38 +29,73 @@ const Login = () => {
     }
   };
 
-    const handleCreateAccount = async () => {
+  const handleCreateAccount = async () => {
     try {
-      const {token} = await api.post("http://localhost:3000/api/auth/register", {
-        "name": emailCreate,
-        "email": emailCreate,
-        "password": passwordCreate,
+      const { token } = await api.post('http://localhost:3000/api/auth/register', {
+        name: emailCreate,
+        email: emailCreate,
+        password: passwordCreate,
       });
       dispatch(setAuthToken(token));
       navigate('/');
     } catch (err) {
-      console.error('Login failed', err);
+      console.error('Account creation failed', err);
     }
   };
-
-
-
 
   return (
     <>
-    <div>
-      <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" />
-      <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password" type="password" />
-      <button onClick={handleLogin}>Login</button>
-    </div>
-    <div>
-      <input value={emailCreate} onChange={(e) => setEmailCreate(e.target.value)} placeholder="email" />
-      <input value={passwordCreate} onChange={(e) => setPasswordCreate(e.target.value)} placeholder="password" type="password" />
-      <button onClick={handleCreateAccount}>Create Account</button>
-    </div>
+      <Navigation />
+      <header className="masthead" style={{backgroundImage: 'url("assets/img/about-bg.jpg")'}}>
+        <div className="container position-relative px-4 px-lg-5">
+          <div className="row gx-4 gx-lg-5 justify-content-center">
+            <div className="col-md-10 col-lg-8 col-xl-7">
+              <div className="page-heading">
+                <h1>Login</h1>
+                <span className="subheading">Welcome back. Log in or create an account.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main className="mb-4">
+        <div className="container px-4 px-lg-5">
+          <div className="row gx-4 gx-lg-5 justify-content-center">
+            <div className="col-md-10 col-lg-8 col-xl-7">
+              <div className="my-5">
+                <h4 className="mb-3">Login</h4>
+                <div className="form-floating mb-3">
+                  <input className="form-control" id="loginEmail" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+                  <label htmlFor="loginEmail">Email</label>
+                </div>
+                <div className="form-floating mb-3">
+                  <input className="form-control" id="loginPassword" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+                  <label htmlFor="loginPassword">Password</label>
+                </div>
+                <button className="btn btn-primary text-uppercase w-100 mb-4" onClick={handleLogin}>Login</button>
+
+                <hr />
+
+                <h4 className="mb-3">Create Account</h4>
+                <div className="form-floating mb-3">
+                  <input className="form-control" id="registerEmail" type="email" placeholder="Email" value={emailCreate} onChange={e => setEmailCreate(e.target.value)} />
+                  <label htmlFor="registerEmail">Email</label>
+                </div>
+                <div className="form-floating mb-3">
+                  <input className="form-control" id="registerPassword" type="password" placeholder="Password" value={passwordCreate} onChange={e => setPasswordCreate(e.target.value)} />
+                  <label htmlFor="registerPassword">Password</label>
+                </div>
+                <button className="btn btn-secondary text-uppercase w-100" onClick={handleCreateAccount}>Create Account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
     </>
   );
 };
 
 export default Login;
+
 

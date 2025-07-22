@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const bcrypt = require('bcryptjs');
 
 
 async function main() {
@@ -63,6 +64,22 @@ async function main() {
       },
     ],
   });
+
+  await prisma.user.upsert({
+  where: {
+    id: 1,
+  },
+  create: {
+    name: process.env.ADMIN_EMAIL,
+    email: process.env.ADMIN_EMAIL, // required if your schema uses unique email
+    password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
+    role: "admin", // assuming your schema has a role field (e.g., 'user', 'admin')
+  },
+  update: {
+    password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
+    role: "admin", // optional but good to include
+  }
+});
 
   console.log('Seed data inserted');
 }
