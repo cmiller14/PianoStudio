@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
-import { loginSuccess } from '../store/authSlice';
+import { setAuthToken } from '../store/application_slice';
+import { useApi } from '../utils/use_api';
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -9,14 +11,18 @@ const Login = () => {
   const [emailCreate, setEmailCreate] = useState('');
   const [passwordCreate, setPasswordCreate] = useState('');
   const dispatch = useDispatch();
+  const api = useApi();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/login', {
-        email,
-        password,
+      const {token} = await api.post('http://localhost:3000/api/auth/login', {
+        "name": email,
+        "email": email,
+        "password": password,
       });
-      dispatch(loginSuccess(res.data.token));
+      dispatch(setAuthToken(token));
+      navigate('/');
     } catch (err) {
       console.error('Login failed', err);
     }
@@ -24,11 +30,13 @@ const Login = () => {
 
     const handleCreateAccount = async () => {
     try {
-      const res = await api.post("http://localhost:3000/api/auth/register", {
-        emailCreate,
-        passwordCreate,
+      const {token} = await api.post("http://localhost:3000/api/auth/register", {
+        "name": emailCreate,
+        "email": emailCreate,
+        "password": passwordCreate,
       });
-      dispatch(loginSuccess(res.data.token));
+      dispatch(setAuthToken(token));
+      navigate('/');
     } catch (err) {
       console.error('Login failed', err);
     }

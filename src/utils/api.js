@@ -13,6 +13,8 @@ export class Api {
       options.body = JSON.stringify(body);
     }
 
+    console.log(options.body);
+
     const res = await fetch(url, {
       method,
       headers: {

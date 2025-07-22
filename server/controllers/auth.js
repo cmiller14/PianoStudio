@@ -2,7 +2,7 @@ import prisma from '../prismaClient.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
+const JWT_SECRET = process.env.ENCRYPTION_KEY || 'supersecret';
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -13,9 +13,11 @@ export const register = async (req, res) => {
     });
 
     // Generate JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({
+      userId: user.id,
+    }, JWT_SECRET);
 
-    res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+    res.json({ user, token });
   } catch (err) {
     res.status(500).json({ error: 'Registration failed' });
   }
