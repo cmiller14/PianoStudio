@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { setAuthToken } from '../store/application_slice';
-import { useApi } from '../utils/use_api';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import { Api} from '../utils/api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailCreate, setEmailCreate] = useState('');
   const [passwordCreate, setPasswordCreate] = useState('');
+  const token = useSelector(state => state.application.authToken);
   const dispatch = useDispatch();
-  const api = useApi();
+  
+  const api = useMemo(() => new Api(() => token), [token]);
   const navigate = useNavigate();
 
   const handleLogin = async () => {

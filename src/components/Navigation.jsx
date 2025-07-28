@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { setAuthToken } from "../store/application_slice";
@@ -11,8 +10,6 @@ function Navigation() {
   const isLoggedIn = useSelector((state) => !!state.application.authToken);
   const dispatch = useDispatch();
   const isAdmin = role === "admin";
-  console.log(isAdmin);
-  console.log(role);
 
   function logout() {
     dispatch(setAuthToken(null));

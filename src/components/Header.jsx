@@ -1,11 +1,12 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
-import { useApi } from '../utils/use_api';
+import { useEffect, useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { Api } from '../utils/api';
 
 function Header() {
+    const token = useSelector(state => state.application.authToken);
     const [messages, setMessages] = useState(null);
 
-    const api = useApi();
+    const api = useMemo(() => new Api(() => token), [token]);
     
     useEffect(() => {
         getMessages()

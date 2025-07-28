@@ -1,24 +1,23 @@
 import { createContext } from "react";
 
 export class Api {
-  authToken = null;
+  getToken = () => null;
 
-  constructor(initialToken) {
-    this.authToken = initialToken
+  constructor(getTokenFn) {
+    this.getToken = getTokenFn
   }
 
   async makeRequest(url, method, body) {
+    const authToken = this.getToken();
     const options = {};
     if (method === 'POST' || method === 'PUT') {
       options.body = JSON.stringify(body);
     }
 
-    console.log(options.body);
-
     const res = await fetch(url, {
       method,
       headers: {
-        Authorization: `Bearer ${this.authToken}`,
+        Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
       },
       ...options,

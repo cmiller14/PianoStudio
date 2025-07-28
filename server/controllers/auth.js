@@ -2,7 +2,7 @@ import prisma from '../prismaClient.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.ENCRYPTION_KEY || 'supersecret';
+const JWT_SECRET = process.env.ENCRYPTION_KEY;
 
 export const register = async (req, res) => {
   const { name, email, password, role } = req.body;
@@ -16,8 +16,11 @@ export const register = async (req, res) => {
     const token = jwt.sign({
       userId: user.id,
       email: user.email,
-      role: user.role
-    }, JWT_SECRET, { expiresIn: '1h' });
+      role: user.role,
+      isAdmin: user.role === "admin"
+    },
+    JWT_SECRET,
+    { expiresIn: '1h' });
 
     res.json({ user, token });
   } catch (err) {
@@ -31,12 +34,20 @@ export const login = async (req, res) => {
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(401).json({ error: 'Invalid credentials (email)' });
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) return res.status(401).json({ error: 'Invalid credentials (password)' });
+    if (!isValid) return res.status(401).json({ error: 'Invalid credentials' });
 
-    const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ 
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      isAdmin: user.role === "admin"
+    }, 
+    JWT_SECRET,
+    { expiresIn: '1h' });
+
     res.json({ token });
   } catch (err) {
     res.status(500).json({ error: 'Login failed' });
