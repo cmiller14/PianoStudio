@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', messagesController.getAllMessages);
 router.get('/type/:type', messagesController.getMessageByType);
-router.put('/edit/:name', authenticateToken, messagesController.updateMessage);
+router.put('/edit/:name', authenticateToken, requireAdmin, messagesController.updateMessage);
 router.get('/:name', messagesController.getMessageByName);
 
 

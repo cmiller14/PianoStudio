@@ -24,6 +24,9 @@ const Login = () => {
         email,
         password,
       });
+      if (token === undefined) {
+        return
+      }
       dispatch(setAuthToken(token));
       navigate('/');
     } catch (err) {

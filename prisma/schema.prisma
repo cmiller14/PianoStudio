@@ -27,3 +27,11 @@ model Text {
   message String
   type    String @default("none")
 }
+
+model ScheduleEvent {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime
+  createdAt   DateTime @default(now())
+}

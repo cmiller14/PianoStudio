@@ -1,14 +1,57 @@
+import { useEffect, useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import EventModal from '../components/EventModal';
+import { Api } from '../utils/api';
+
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+
 
 function Schedule() {
+  const token = useSelector(state => state.application.authToken);
+  const isAdmin = useSelector(state => state.application.settings?.isAdmin);
+  const isLoggedIn = useSelector((state) => !!state.application.authToken);
+  const api = useMemo(() => new Api(() => token), [token]);
+
+  const [events, setEvents] = useState([]);
+  const [newEvent, setNewEvent] = useState({ title: '', description: '', date: '' });
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const calendarEvents = useMemo(() => {
+  return events.map(e => ({
+    id: String(e.id),
+    title: e.title,
+    date: e.date,
+    extendedProps: {
+      description: e.description
+    }
+  }));
+}, [events]);
+
+  useEffect(() => {
+    api.get('http://localhost:3000/api/schedule').then(setEvents);
+  }, []);
+
+
+  const handleChange = (e) => {
+    setNewEvent(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleAddEvent = async () => {
+    if (!newEvent.title || !newEvent.date) return alert('Title and date are required');
+    const created = await api.post('http://localhost:3000/api/schedule/add', newEvent);
+    setEvents(prev => [...prev, created]);
+    setNewEvent({ title: '', description: '', date: '' });
+  };
+
   return (
     <>
-        
-        <Navigation/>
-        <div>
-        {/* Page Header*/}
-        <header className="masthead" style={{backgroundImage: 'url("assets/img/about-bg.jpg")'}}>
+      <Navigation />
+
+      <header className="masthead" style={{ backgroundImage: 'url("assets/img/about-bg.jpg")' }}>
             <div className="container position-relative px-4 px-lg-5">
             <div className="row gx-4 gx-lg-5 justify-content-center">
                 <div className="col-md-10 col-lg-8 col-xl-7">
@@ -20,40 +63,70 @@ function Schedule() {
             </div>
             </div>
         </header>
-        {/* Main Content*/}
-        <main className="mb-4">
-            <div className="container px-4 px-lg-5">
-            <div className="row gx-4 gx-lg-5 justify-content-center">
-                <div className="col-md-10 col-lg-8 col-xl-7">
-                {/* Schedule a Lesson FIRST */}
-                <div className="mt-5">
-                    <h4>Schedule a Lesson</h4>
-                    <p>Click the button below to access the booking page and schedule your lesson at a time that works for you.</p>
-                    <p>
-                    <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1YI2mHWyiINBTNG3GayZkNIPKE6xzuRIg_3syy-KcM2qdKxvtP-k4yIH8r69UZS85gbRDsKOJt" target="_blank" className="btn btn-primary">
-                        <i className="fas fa-calendar-check" /> Book a Lesson Now
-                    </a>
-                    </p>
-                </div>
-                {/* Embedded Google Calendar */}
-                <iframe src="https://calendar.google.com/calendar/embed?src=pianomom.2025%40gmail.com&ctz=America%2FDenver" style={{border: 0}} width={800} height={600} frameBorder={0} scrolling="no" />
-                {/* Rescheduling Information */}
-                <div className="mt-5">
-                    <h4>Should you need to reschedule a lesson:</h4>
-                    <ul>
-                    <li>Please review the calendar above to find potential openings or opportunities to swap times with another student</li>
-                    <li>After identifying a suitable alternative time, contact Lisa Miller to finalize the schedule change.</li>
-                    </ul>
-                    <p>Thank you for your understanding and cooperation.</p>
-                </div>
-                </div>
+
+      <main className="mb-4">
+        <div className="container px-4 px-lg-5">
+          <div className="row justify-content-center">
+            <div className="col-md-10 col-lg-8 col-xl-7">
+
+              <h4>Upcoming Events</h4>
+                  <div className="container my-4">
+                    <h2 className="mb-4 text-center">Studio Schedule</h2>
+
+                    <FullCalendar
+                      plugins={[dayGridPlugin, interactionPlugin]}
+                      initialView="dayGridMonth"
+                      events={calendarEvents}
+                      eventClick={({ event }) => {
+                        const { title, extendedProps, start, id } = event;
+                        setSelectedEvent({
+                          id,
+                          title,
+                          date: start,
+                          description: extendedProps?.description,
+                        });
+                      }}
+                      height="auto"
+                    />
+                  </div>
+              {selectedEvent && <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
+              {isAdmin && isLoggedIn && (
+                <>
+                  <h4>Add New Event</h4>
+                  <div className="mb-3">
+                    <input
+                      name="title"
+                      value={newEvent.title}
+                      onChange={handleChange}
+                      className="form-control mb-2"
+                      placeholder="Event Title"
+                    />
+                    <textarea
+                      name="description"
+                      value={newEvent.description}
+                      onChange={handleChange}
+                      className="form-control mb-2"
+                      placeholder="Event Description (optional)"
+                    />
+                    <input
+                      name="date"
+                      type="datetime-local"
+                      value={newEvent.date}
+                      onChange={handleChange}
+                      className="form-control mb-2"
+                    />
+                    <button onClick={handleAddEvent} className="btn btn-success">Add Event</button>
+                  </div>
+                </>
+              )}
             </div>
-            </div>
-        </main>
+          </div>
         </div>
-        <Footer/>
+      </main>
+
+      <Footer />
     </>
-  )
+  );
 }
 
-export default Schedule
+export default Schedule;

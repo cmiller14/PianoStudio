@@ -1,8 +1,4 @@
 import prisma from '../prismaClient.js';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.ENCRYPTION_KEY || 'supersecret';
 
 export const getAllUsers = async (req, res) => {
   try {
