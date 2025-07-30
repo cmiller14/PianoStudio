@@ -1,12 +1,22 @@
-# React + Vite
+# Miller Piano Studio Website 🎹
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a custom web application I built for my mom’s small business — *Miller Piano Studio*. She is a private piano teacher and needed a site to help students and parents stay informed, and view the studio schedule.
 
-Currently, two official plugins are available:
+The frontend is built using **React** with **Vite** for fast development and live updates. It also includes some basic ESLint rules to help maintain code quality.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Responsive design for desktop and mobile
+- Custom studio schedule with admin access to add events
+- Integration with Google Calendar for lesson booking
+- Secure login and admin-only controls
+- Built-in modal for viewing and managing event details
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+
+- **React** (UI)
+- **Vite** (build tool & dev server)
+- **Express** (API server)
+- **Prisma** (database ORM)
+- **PostgreSQL** (data storage)
+- **FullCalendar** (interactive calendar)
