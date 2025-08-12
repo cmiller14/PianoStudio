@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import 'dotenv/config'; 
 
 const JWT_SECRET = process.env.ENCRYPTION_KEY;
-console.log(JWT_SECRET);
 
 // REGISTER
 export const register = async (req, res) => {

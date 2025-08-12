@@ -30,7 +30,6 @@ function About() {
     async function saveMessages() {
         for (const [name, messageObj] of Object.entries(messages)) {
             const id = messageObj.id;
-            console.log({ content: messageObj.message });
             const data = await api.put(`${API_URL}/api/messages/edit/${id}`, { content: messageObj.message });
         }
         setEditing(false);

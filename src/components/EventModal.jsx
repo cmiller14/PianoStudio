@@ -9,7 +9,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 function EventModal({ event, onClose }) {
   if (!event) return null;
 
-  console.log(event);
   const isAdmin = useSelector(state => state.application.settings?.isAdmin);
   const isLoggedIn = useSelector((state) => !!state.application.authToken);
   const token = useSelector(state => state.application.authToken);
