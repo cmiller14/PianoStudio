@@ -14,10 +14,10 @@ app.use(cors());
 app.use(express.json());
 
 // Mount routes
-app.use('/api/auth', authRoutes);
-app.use('/api/messages', messageRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/schedule', scheduleRoutes);
+app.use('/auth', authRoutes);
+app.use('/messages', messageRoutes);
+app.use('/users', userRoutes);
+app.use('/schedule', scheduleRoutes);
 
 // Export for Vercel
 export const handler = serverless(app);
