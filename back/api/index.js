@@ -20,6 +20,7 @@ app.use('/users', userRoutes);
 app.use('/schedule', scheduleRoutes);
 
 // Export for Vercel
-export const handler = serverless(app);
+const handler = serverless(app);
+export default handler;
 
 
