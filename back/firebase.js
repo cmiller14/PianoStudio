@@ -1,11 +1,8 @@
 // firebaseClient.js
 import admin from "firebase-admin";
-import { readFileSync } from "fs";
 
 // Load service account key
-const serviceAccount = JSON.parse(
-  readFileSync("../firebase-key.json", "utf8")
-);
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 if (!admin.apps.length) {
   admin.initializeApp({

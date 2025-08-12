@@ -1,4 +1,4 @@
-import { db } from '../../../firebase.js';
+import { db } from '../../firebase.js';
 
 // Get all events (ordered by date ascending)
 export async function getEvents(req, res) {

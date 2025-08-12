@@ -1,4 +1,4 @@
-import { db } from '../../../firebase.js';
+import { db } from '../../firebase.js';
 
 // Get all users (id, name, email only)
 export const getAllUsers = async (req, res) => {
