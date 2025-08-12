@@ -4,6 +4,7 @@ import '../App.css';
 import { useSelector } from 'react-redux';
 import { Api } from '../utils/api';
 import { useMemo } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function EventModal({ event, onClose }) {
   if (!event) return null;
@@ -16,7 +17,7 @@ function EventModal({ event, onClose }) {
   const api = useMemo(() => new Api(() => token), [token]);
 
   const deleteEvent = async () => {
-    const data = await api.del(`http://localhost:3000/api/schedule/delete/${event.id}`);
+    const data = await api.del(`${API_URL}/api/schedule/delete/${event.id}`);
     onClose()
   };
 

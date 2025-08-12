@@ -8,6 +8,7 @@ import { Api } from '../utils/api';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 function Schedule() {
@@ -32,7 +33,7 @@ function Schedule() {
 }, [events]);
 
   useEffect(() => {
-    api.get('http://localhost:3000/api/schedule').then(setEvents);
+    api.get(`${API_URL}/api/schedule`).then(setEvents);
   }, []);
 
 
@@ -42,7 +43,7 @@ function Schedule() {
 
   const handleAddEvent = async () => {
     if (!newEvent.title || !newEvent.date) return alert('Title and date are required');
-    const created = await api.post('http://localhost:3000/api/schedule/add', newEvent);
+    const created = await api.post(`${API_URL}/api/schedule/add`, newEvent);
     setEvents(prev => [...prev, created]);
     setNewEvent({ title: '', description: '', date: '' });
   };

@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { setAuthToken } from "../store/application_slice";
+// In your index.js or App.js
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js"; // This includes Popper
+
 
 
 function Navigation() {

@@ -26,3 +26,7 @@ dist-ssr
 .env
 
 /src/generated/prisma
+
+firebase-key.json
+firebase.json
+.firebase*

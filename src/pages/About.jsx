@@ -4,6 +4,8 @@ import Footer from '../components/Footer';
 import { useSelector } from 'react-redux';
 import { useMemo } from "react";
 import { Api } from '../utils/api';
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 function About() {
     const isAdmin = useSelector(state => state.application.settings?.isAdmin);
@@ -20,7 +22,7 @@ function About() {
     }, []);
 
     async function getMessages() {
-        const data = await api.get('http://localhost:3000/api/messages/type/about');
+        const data = await api.get(`${API_URL}/api/messages/type/about`);
         const mapped = Object.fromEntries(data.map(msg => [msg.name, msg]));
         setMessages(mapped);
     }
@@ -28,7 +30,8 @@ function About() {
     async function saveMessages() {
         for (const [name, messageObj] of Object.entries(messages)) {
             const id = messageObj.id;
-            const data = await api.put(`http://localhost:3000/api/messages/edit/${id}`, { content: messageObj.message });
+            console.log({ content: messageObj.message });
+            const data = await api.put(`${API_URL}/api/messages/edit/${id}`, { content: messageObj.message });
         }
         setEditing(false);
     }

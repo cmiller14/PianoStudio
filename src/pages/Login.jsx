@@ -5,6 +5,8 @@ import { setAuthToken } from '../store/application_slice';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import { Api} from '../utils/api';
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +21,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const { token } = await api.post('http://localhost:3000/api/auth/login', {
+      const { token } = await api.post(`${API_URL}/api/auth/login`, {
         name: email,
         email,
         password,
@@ -36,7 +38,7 @@ const Login = () => {
 
   const handleCreateAccount = async () => {
     try {
-      const { token } = await api.post('http://localhost:3000/api/auth/register', {
+      const { token } = await api.post(`${API_URL}/api/auth/register`, {
         name: emailCreate,
         email: emailCreate,
         password: passwordCreate,

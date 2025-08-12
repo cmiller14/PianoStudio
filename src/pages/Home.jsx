@@ -1,10 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navigation from '../components/Navigation';
-import Header from '../components/header';
+import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useEffect, useState, useMemo } from 'react';
 import { Api} from '../utils/api';
 import { useSelector } from 'react-redux';
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 
@@ -22,7 +23,7 @@ export default function Home() {
   }, []);
 
   async function getMessages() {
-      const message = await api.get("http://localhost:3000/api/messages/type/home");
+      const message = await api.get(`${API_URL}/api/messages/type/home`);
       const mapped = Object.fromEntries(message.map(msg => [msg.name, msg]));
       setMessages(mapped);
   }
@@ -30,7 +31,7 @@ export default function Home() {
   async function saveMessages() {
     for (const [name, messageObj] of Object.entries(messages)) {
         const id = messageObj.id;
-        const data = await api.put(`http://localhost:3000/api/messages/edit/${id}`, { content: messageObj.message });
+        const data = await api.put(`${API_URL}/api/messages/edit/${id}`, { content: messageObj.message });
     }
     setEditing(false);
   }
