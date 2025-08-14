@@ -13,10 +13,10 @@ app.use(cors());
 app.use(express.json());
 
 // Mount routes
-app.use('/auth', authRoutes);
-app.use('/messages', messageRoutes);
-app.use('/users', userRoutes);
-app.use('/schedule', scheduleRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/schedule', scheduleRoutes);
 
 export default async function handler(req, res) {
   // Use Express app to handle the request
