@@ -10,12 +10,6 @@ import scheduleRoutes from './server/routes/schedule.js';
 const app = express();
 
 app.set('trust proxy', 1);
-app.use((req, res, next) => {
-  console.log('Remote address:', req.connection.remoteAddress);
-  console.log('X-Forwarded-For:', req.headers['x-forwarded-for']);
-  next();
-});
-
 app.use(cors());
 app.use(express.json());
 
