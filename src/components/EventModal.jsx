@@ -24,7 +24,16 @@ function EventModal({ event, onClose }) {
     <div className="modal-backdrop">
       <div className="modal-content">
         <h3>{event.title}</h3>
-        <p>{new Date(event.date).toISOString()}</p>
+        <p>
+          {new Date(event.date).toLocaleString(undefined, {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          })}
+        </p>
         {event.description && <p>{event.description}</p>}
         <button onClick={onClose} className="btn btn-secondary mt-3">Close</button>
         {isAdmin && isLoggedIn && (
