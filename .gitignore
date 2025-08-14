@@ -30,3 +30,4 @@ dist-ssr
 firebase-key.json
 firebase.json
 .firebase*
+.vercel
