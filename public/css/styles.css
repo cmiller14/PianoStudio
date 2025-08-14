@@ -10801,3 +10801,40 @@ header.masthead .post-heading .meta a {
   color: #333; /* dark grey */
 }
 
+/* Ensure the calendar fills its container */
+.fc {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+
+@media (max-width: 768px) {
+  /* Day cells should all share the width equally */
+  .fc .fc-daygrid-body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 equal columns */
+  }
+
+  .fc .fc-daygrid-day {
+    min-width: 0; /* allows flex/grid to shrink properly */
+    overflow: hidden;
+  }
+
+  /* Shrink event text so it doesn’t overflow */
+  .fc .fc-daygrid-event .fc-event-title {
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Shrink day number */
+  .fc .fc-daygrid-day-number {
+    font-size: 0.75rem;
+  }
+}
+
+
+
+
+

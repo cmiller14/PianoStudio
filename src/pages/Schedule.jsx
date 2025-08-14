@@ -79,6 +79,8 @@ function Schedule() {
                       plugins={[dayGridPlugin, interactionPlugin]}
                       initialView="dayGridMonth"
                       events={calendarEvents}
+                      height="auto"
+                      dayMaxEventRows={true} // prevents events from overflowing
                       eventClick={({ event }) => {
                         const { title, extendedProps, start, id } = event;
                         setSelectedEvent({
@@ -88,8 +90,8 @@ function Schedule() {
                           description: extendedProps?.description,
                         });
                       }}
-                      height="auto"
                     />
+
                   </div>
               {selectedEvent && <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
               {isAdmin && isLoggedIn && (
