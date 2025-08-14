@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useEffect, useState, useMemo } from 'react';
 import { Api} from '../utils/api';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -78,8 +79,10 @@ export default function Home() {
                         onChange={(e) => handleChange('home_schedule', e.target.value)}
                     />
                     ) : (
-                    <a href="schedule">
-                    <h3 className="post-subtitle">{messages.home_schedule?.message}</h3>
+                    <a>
+                    <h3 className="post-subtitle">
+                      <Link to="/schedule" className="my-link">{messages.home_schedule?.message}</Link>
+                    </h3>
                     </a>
                     )
                 }
@@ -97,8 +100,10 @@ export default function Home() {
                       onChange={(e) => handleChange('home_about', e.target.value)}
                   />
                   ) : (
-                  <a href="about">
-                  <h3 className="post-subtitle">{messages.home_about?.message}</h3>
+                  <a >
+                  <h3 className="post-subtitle">
+                    <Link to="/about" className="my-link">{messages.home_about?.message}</Link>
+                    </h3>
                   </a>
                   )
               }
@@ -115,8 +120,10 @@ export default function Home() {
                       onChange={(e) => handleChange('home_contact', e.target.value)}
                   />
                   ) : (
-                  <a href="contact">
-                  <h3 className="post-subtitle">{messages.home_contact?.message}</h3>
+                    <a>
+                   <h3 className="post-subtitle">
+                    <Link to="/contact" className="my-link">{messages.home_contact?.message}</Link>
+                  </h3>
                   </a>
                   )
               }

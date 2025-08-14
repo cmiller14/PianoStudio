@@ -11,8 +11,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailCreate, setEmailCreate] = useState('');
-  const [passwordCreate, setPasswordCreate] = useState('');
   const token = useSelector(state => state.application.authToken);
   const dispatch = useDispatch();
   
@@ -33,20 +31,6 @@ const Login = () => {
       navigate('/');
     } catch (err) {
       console.error('Login failed', err);
-    }
-  };
-
-  const handleCreateAccount = async () => {
-    try {
-      const { token } = await api.post(`${API_URL}/api/auth/register`, {
-        name: emailCreate,
-        email: emailCreate,
-        password: passwordCreate,
-      });
-      dispatch(setAuthToken(token));
-      navigate('/');
-    } catch (err) {
-      console.error('Account creation failed', err);
     }
   };
 
@@ -82,17 +66,6 @@ const Login = () => {
                 <button className="btn btn-primary text-uppercase w-100 mb-4" onClick={handleLogin}>Login</button>
 
                 <hr />
-
-                <h4 className="mb-3">Create Account</h4>
-                <div className="form-floating mb-3">
-                  <input className="form-control" id="registerEmail" type="email" placeholder="Email" value={emailCreate} onChange={e => setEmailCreate(e.target.value)} />
-                  <label htmlFor="registerEmail">Email</label>
-                </div>
-                <div className="form-floating mb-3">
-                  <input className="form-control" id="registerPassword" type="password" placeholder="Password" value={passwordCreate} onChange={e => setPasswordCreate(e.target.value)} />
-                  <label htmlFor="registerPassword">Password</label>
-                </div>
-                <button className="btn btn-secondary text-uppercase w-100" onClick={handleCreateAccount}>Create Account</button>
               </div>
             </div>
           </div>
