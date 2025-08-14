@@ -25,7 +25,8 @@ function EventModal({ event, onClose }) {
       <div className="modal-content">
         <h3>{event.title}</h3>
         <p>
-          {new Date(event.date).toUTCString(undefined, {
+          {new Date(event.date).toLocaleString('en-US', {
+            timeZone: 'UTC',
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
