@@ -20,6 +20,8 @@ function Schedule() {
   const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({ title: '', description: '', date: '' });
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [recurringEvent, setRecurringEvent] = useState(false);
+  const [repeatWeeks, setRepeatWeeks] = useState(0);
 
   const calendarEvents = useMemo(() => {
   return events.map(e => ({
@@ -43,9 +45,37 @@ function Schedule() {
 
   const handleAddEvent = async () => {
     if (!newEvent.title || !newEvent.date) return alert('Title and date are required');
-    const created = await api.post(`${API_URL}/api/schedule/add`, newEvent);
-    setEvents(prev => [...prev, created]);
-    setNewEvent({ title: '', description: '', date: '' });
+    if (recurringEvent) {
+        // Start date
+      const startDate = new Date(newEvent.date);
+
+      // Store created events
+      const createdEvents = [];
+
+      for (let i = 0; i < repeatWeeks; i++) {
+        // Make a copy of the event with the new date
+        const eventToCreate = {
+          ...newEvent,
+          date: new Date(startDate.getTime() + i * 7 * 24 * 60 * 60 * 1000).toISOString(), // add i weeks
+        };
+
+        const created = await api.post(`${API_URL}/api/schedule/add`, eventToCreate);
+        createdEvents.push(created);
+      }
+
+      setEvents((prev) => [...prev, ...createdEvents]);
+      setNewEvent({ title: '', description: '', date: '' });
+      setRecurringEvent(false);
+      setRepeatWeeks(0);
+
+    } else {
+      const created = await api.post(`${API_URL}/api/schedule/add`, newEvent);
+      setEvents(prev => [...prev, created]);
+      setNewEvent({ title: '', description: '', date: '' });
+      setRecurringEvent(false);
+      setRepeatWeeks(0);
+    }
+    
   };
 
   return (
@@ -119,8 +149,40 @@ function Schedule() {
                       onChange={handleChange}
                       className="form-control mb-2"
                     />
+                    {/* Recurring Checkbox */}
+                  <div className="form-check mb-2">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="isRecurring"
+                    checked={recurringEvent}
+                    onChange={(e) => setRecurringEvent(e.target.checked)}
+                  />
+                  <label htmlFor="isRecurring" className="form-check-label">
+                    Recurring Event
+                  </label>
+                  {recurringEvent && (
+                    <div className="mb-2">
+                      <label htmlFor="repeatWeeks" className="form-label">
+                        Repeat every
+                      </label>
+                      <select
+                        id="repeatWeeks"
+                        className="form-control"
+                        value={repeatWeeks || 1}   // <-- tied to repeatWeeks
+                        onChange={(e) => setRepeatWeeks(Number(e.target.value))} // <-- updates repeatWeeks
+                      >
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                          <option key={num} value={num}>
+                            {num} week{num > 1 ? "s" : ""}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
                     <button onClick={handleAddEvent} className="btn btn-success">Add Event</button>
-                  </div>
+                </div>
                 </>
               )}
             </div>
