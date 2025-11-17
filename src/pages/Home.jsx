@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navigation from '../components/Navigation';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import NewsBoard from '../components/NewsBoard';
 import { useEffect, useState, useMemo } from 'react';
 import { Api} from '../utils/api';
 import { Link } from 'react-router-dom';
@@ -53,6 +54,7 @@ export default function Home() {
     <>
     <Navigation/>
     <Header/>
+    <NewsBoard/>
       {/* Main Content*/}
       <div className="container px-4 px-lg-5">
             {isAdmin && isLoggedIn && (
@@ -79,11 +81,9 @@ export default function Home() {
                         onChange={(e) => handleChange('home_schedule', e.target.value)}
                     />
                     ) : (
-                    <a>
                     <h3 className="post-subtitle">
                       <Link to="/schedule" className="my-link">{messages.home_schedule?.message}</Link>
-                    </h3>
-                    </a>
+                    </h3>          
                     )
                 }
             </div>
@@ -100,11 +100,9 @@ export default function Home() {
                       onChange={(e) => handleChange('home_about', e.target.value)}
                   />
                   ) : (
-                  <a >
                   <h3 className="post-subtitle">
                     <Link to="/about" className="my-link">{messages.home_about?.message}</Link>
-                    </h3>
-                  </a>
+                  </h3>
                   )
               }
             </div>
@@ -120,11 +118,9 @@ export default function Home() {
                       onChange={(e) => handleChange('home_contact', e.target.value)}
                   />
                   ) : (
-                    <a>
                    <h3 className="post-subtitle">
                     <Link to="/contact" className="my-link">{messages.home_contact?.message}</Link>
                   </h3>
-                  </a>
                   )
               }
             </div>
