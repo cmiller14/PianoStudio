@@ -3,32 +3,25 @@ import Navigation from '../components/Navigation';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import NewsBoard from '../components/NewsBoard';
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Api} from '../utils/api';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateMessageLocally } from '../store/config_slice';
 const API_URL = import.meta.env.VITE_API_URL;
 
 
 
 export default function Home() {
+  const dispatch = useDispatch();
   const token = useSelector(state => state.application.authToken);
   const isAdmin = useSelector(state => state.application.settings?.isAdmin);
   const isLoggedIn = useSelector((state) => !!state.application.authToken);
-  const [messages, setMessages] = useState([]);
   const [editing, setEditing] = useState(false);
 
+  const messages = useSelector(state => state.config.messages);
+  const loading = useSelector(state => state.config.loading);
   const api = useMemo(() => new Api(() => token), [token]);
-  
-  useEffect(() => {
-      getMessages();
-  }, []);
-
-  async function getMessages() {
-      const message = await api.get(`${API_URL}/api/messages/type/home`);
-      const mapped = Object.fromEntries(message.map(msg => [msg.name, msg]));
-      setMessages(mapped);
-  }
 
   async function saveMessages() {
     for (const [name, messageObj] of Object.entries(messages)) {
@@ -39,16 +32,10 @@ export default function Home() {
   }
 
   function handleChange(name, value) {
-    setMessages(prev => ({
-        ...prev,
-        [name]: {
-        ...prev[name],
-        message: value
-        }
-    }));
+    dispatch(updateMessageLocally({ name, value }));
   }
 
-
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>

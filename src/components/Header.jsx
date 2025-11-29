@@ -1,27 +1,22 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Api } from '../utils/api';
+import { updateMessageLocally } from '../store/config_slice';
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Header() {
+    const dispatch = useDispatch();
     const isAdmin = useSelector(state => state.application.settings?.isAdmin);
     const isLoggedIn = useSelector((state) => !!state.application.authToken);
     const token = useSelector(state => state.application.authToken);
 
-    const [messages, setMessages] = useState([]);
     const [editing, setEditing] = useState(false);
 
-    const api = useMemo(() => new Api(() => token), [token]);
-    
-    useEffect(() => {
-        getMessages()
-    }, []);
+    const messages = useSelector(state => state.config.messages);
+    const loading = useSelector(state => state.config.loading);
 
-    async function getMessages() {
-        const message = await api.get(`${API_URL}/api/messages/type/header`);
-        const mapped = Object.fromEntries(message.map(msg => [msg.name, msg]));
-        setMessages(mapped);
-    }
+    const api = useMemo(() => new Api(() => token), [token]);
+
 
     async function saveMessages() {
         for (const [name, messageObj] of Object.entries(messages)) {
@@ -32,14 +27,10 @@ function Header() {
     }
 
     function handleChange(name, value) {
-        setMessages(prev => ({
-            ...prev,
-            [name]: {
-            ...prev[name],
-            message: value
-            }
-        }));
-        }
+        dispatch(updateMessageLocally({ name, value }));
+    }
+
+    if (loading) return;
 
   return (
     <>

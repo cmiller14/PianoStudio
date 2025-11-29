@@ -34,3 +34,56 @@
 .my-subtitle a:hover {
   color: #555; /* optional hover color */
 }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  animation: popupFade 0.25s ease-out;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.news-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.news-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.card-title {
+  font-size: 1.4rem;
+}
+
+img.rounded {
+  border-radius: 12px !important;
+}
+
+

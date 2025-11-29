@@ -32,7 +32,6 @@ function Navigation() {
             <div className="collapse navbar-collapse" id="navbarResponsive">
             <ul className="navbar-nav ms-auto py-4 py-lg-0">
                 <li className="nav-item"><Link className="nav-link px-lg-3 py-3 py-lg-4" to="/">Home</Link></li>
-                <li className='nav-item'><Link className='nav-link px-lg-3 py-3 py-lg-4' to="/">News Board</Link></li>
                 <li className="nav-item"><Link className="nav-link px-lg-3 py-3 py-lg-4" to="/schedule">Studio Schedule</Link></li>
                 <li className="nav-item"><Link className="nav-link px-lg-3 py-3 py-lg-4" to="/about">About</Link></li>
                 <li className="nav-item"><Link className="nav-link px-lg-3 py-3 py-lg-4" to="/contact">Contact</Link></li>
