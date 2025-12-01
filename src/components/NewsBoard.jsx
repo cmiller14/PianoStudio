@@ -1,7 +1,11 @@
-import { useState } from "react";
-import { useSelector } from 'react-redux';
+import { useState, useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
 import ListPosts from "./ListPosts";
 import AddPost from "./AddPost";
+import { Api } from "../utils/api";
+import { formatDate } from "../utils/format_date";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function NewsBoard() {
   const [posts, setPosts] = useState([]);
@@ -11,21 +15,49 @@ function NewsBoard() {
   const [imageFile, setImageFile] = useState(null);
   const [addPostButton, setAddPostButton] = useState(false);
 
-  const isAdmin = useSelector(state => state.application.settings?.isAdmin);
+  const token = useSelector((state) => state.application.authToken);
+  const isAdmin = useSelector((state) => state.application.settings?.isAdmin);
   const isLoggedIn = useSelector((state) => !!state.application.authToken);
+
+  const api = useMemo(() => new Api(() => token), [token]);
+
+  // Fetch News
+  useEffect(() => {
+    const loadNews = async () => {
+      const response = await api.get(`${API_URL}/api/news`);
+
+      // Format all dates in the fetched posts
+      const formatted = response.map((post) => ({
+        ...post,
+        date: formatDate(post.date),
+      }));
+
+      setPosts(formatted);
+    };
+
+    loadNews();
+  }, []);
+
+  async function addPostDataBase(newsEvent) {
+    const created = await api.post(`${API_URL}/api/news/add`, newsEvent);
+
+    // Ensure backend response date is formatted too
+    return { ...created, date: formatDate(created.date) };
+  }
 
   function handleAddPost(e) {
     e.preventDefault();
 
     const newPost = {
-      id: Date.now(),
       title,
       date,
       body,
-      image: imageFile ? URL.createObjectURL(imageFile) : null,
     };
 
-    setPosts([newPost, ...posts]);
+    addPostDataBase(newPost).then((formattedPost) => {
+      // Add the new post with formatted date
+      setPosts((prev) => [formattedPost, ...prev]);
+    });
 
     // Clear form
     setTitle("");
@@ -33,17 +65,18 @@ function NewsBoard() {
     setBody("");
     setImageFile(null);
 
-    // Close modal
     setAddPostButton(false);
   }
 
   return (
     <div className="container my-5">
-
       <ListPosts posts={posts} />
 
       {!addPostButton && isAdmin && isLoggedIn && (
-        <button className="btn btn-primary" onClick={() => setAddPostButton(true)}>
+        <button
+          className="btn btn-primary"
+          onClick={() => setAddPostButton(true)}
+        >
           Add Post
         </button>
       )}
@@ -51,9 +84,8 @@ function NewsBoard() {
       {addPostButton && (
         <div className="modal-overlay" onClick={() => setAddPostButton(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            
-            <button 
-              className="close-button" 
+            <button
+              className="close-button"
               onClick={() => setAddPostButton(false)}
             >
               ✕
@@ -72,7 +104,6 @@ function NewsBoard() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

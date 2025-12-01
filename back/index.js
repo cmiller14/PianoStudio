@@ -6,6 +6,7 @@ import messageRoutes from './server/routes/messages.js';
 import authRoutes from './server/routes/auth.js';
 import userRoutes from './server/routes/users.js';
 import scheduleRoutes from './server/routes/schedule.js';
+import newsRoutes from './server/routes/news.js';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/schedule', scheduleRoutes);
+app.use('/api/news', newsRoutes);
 
 export default async function handler(req, res) {
   // Use Express app to handle the request
