@@ -14,6 +14,8 @@ function NewsBoard() {
   const [body, setBody] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [addPostButton, setAddPostButton] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
 
   const token = useSelector((state) => state.application.authToken);
   const isAdmin = useSelector((state) => state.application.settings?.isAdmin);
@@ -84,9 +86,35 @@ function NewsBoard() {
     setAddPostButton(false);
   }
 
+  function handlePostClick(post) {
+    if (!isAdmin) return; // only admins can click
+    setPostToDelete(post);
+    setShowDeletePopup(true);
+  }
+
+  async function confirmDelete() {
+    await api.del(`${API_URL}/api/news/delete/${postToDelete.id}`);
+    setPosts((prev) => prev.filter(p => p.id !== postToDelete.id));
+    setShowDeletePopup(false);
+    setPostToDelete(null);
+  }
+
+
   return (
     <div className="container my-5">
-      <ListPosts posts={posts} />
+      <ListPosts posts={posts} handlePostClick={handlePostClick} isAdmin={isAdmin} />
+
+      {showDeletePopup && (
+        <div className="delete-popup-backdrop">
+          <div className="delete-popup">
+            <h4>Delete Post?</h4>
+            <p>Are you sure you want to delete "{postToDelete.title}"?</p>
+            <button className="btn btn-danger" onClick={confirmDelete}>Delete</button>
+            <button className="btn btn-secondary ms-2" onClick={() => setShowDeletePopup(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
 
       {!addPostButton && isAdmin && isLoggedIn && (
         <button

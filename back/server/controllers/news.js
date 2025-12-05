@@ -85,13 +85,50 @@ export async function deleteEvent(req, res) {
     const doc = await docRef.get();
 
     if (!doc.exists) {
-      return res.status(404).json({ success: false, message: 'Event not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Event not found'
+      });
     }
 
+    const data = doc.data();
+    const imageUrl = data.image; // Example: https://xyz.supabase.co/storage/v1/object/public/news-images/abc123.png
+
+    // 1️⃣ Delete Firestore document
     await docRef.delete();
-    res.json({ success: true, deleted: { id, ...doc.data() } });
+
+    // 2️⃣ Delete Supabase image (if present)
+    if (imageUrl) {
+      // Extract the path AFTER the bucket URL
+      // Example:
+      // "https://projectid.supabase.co/storage/v1/object/public/news-images/myfile.png"
+      // -> "myfile.png"
+      const bucket = "PianoStudio"; // your bucket name
+
+      const path = imageUrl.split(`${bucket}/`)[1];
+
+      if (path) {
+        const { error: storageError } = await supabase
+          .storage
+          .from(bucket)
+          .remove([path]);
+
+        if (storageError) {
+          console.error("⚠️ Failed to delete image from Supabase:", storageError);
+        }
+      }
+    }
+
+    return res.json({
+      success: true,
+      deleted: { id, ...data }
+    });
+
   } catch (error) {
-    console.error('Error deleting event:', error);
-    res.status(500).json({ success: false, message: 'Failed to delete event' });
+    console.error("Error deleting event:", error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to delete event'
+    });
   }
 }
