@@ -1,4 +1,44 @@
 import { db } from '../../firebase.js';
+import { supabase } from "../utils/supabase.js";
+
+export async function uploadNewsImage(req, res) {
+  try {
+    console.log("File received?", req.file);
+
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const file = req.file;
+    const fileName = `${Date.now()}-${file.originalname}`;
+
+    // Upload buffer directly to Supabase
+    const { data, error } = await supabase.storage
+      .from("PianoStudio")
+      .upload(fileName, file.buffer, {
+        contentType: file.mimetype,
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    // Get a public URL
+    const { data: publicUrlData } = supabase.storage
+      .from("PianoStudio")
+      .getPublicUrl(fileName);
+
+    return res.json({ url: publicUrlData.publicUrl });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
 
 
 // Get all events (ordered by date ascending)
@@ -19,16 +59,17 @@ export async function getEvents(req, res) {
 
 
 export async function addEvent(req, res) {
-  const { title, date, body } = req.body;
+  const { title, date, body, image } = req.body;
 
   try {
     const docRef = await db.collection('newsEvents').add({
       title,
       date, // stored as Firestore Timestamp
-      body
+      body,
+      image: image || null
     });
 
-    res.json({ id: docRef.id, title, body, date });
+    res.json({ id: docRef.id, title, body, date, image });
   } catch (error) {
     console.error('Error adding event:', error);
     res.status(500).json({ error: 'Failed to add event' });

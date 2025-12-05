@@ -45,13 +45,30 @@ function NewsBoard() {
     return { ...created, date: formatDate(created.date) };
   }
 
-  function handleAddPost(e) {
+  async function uploadNewsImage(imageFile) {
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    const response = await api.upload(`${API_URL}/api/news/upload-image`, formData);
+    return response;  
+}
+
+
+  async function handleAddPost(e) {
     e.preventDefault();
+    let imageUrl = null;
+      // 1. Upload image if selected
+    if (imageFile) {
+      console.log(imageFile);
+      const uploadRes = await uploadNewsImage(imageFile);
+      imageUrl = uploadRes.url;
+    }
 
     const newPost = {
       title,
       date,
       body,
+      image: imageUrl,
     };
 
     addPostDataBase(newPost).then((formattedPost) => {
@@ -64,7 +81,6 @@ function NewsBoard() {
     setDate("");
     setBody("");
     setImageFile(null);
-
     setAddPostButton(false);
   }
 
