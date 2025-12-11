@@ -16,11 +16,12 @@ function NewsBoard() {
   const [addPostButton, setAddPostButton] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(5);
 
+  const visiblePosts = posts.slice(0, visibleCount);
   const token = useSelector((state) => state.application.authToken);
   const isAdmin = useSelector((state) => state.application.settings?.isAdmin);
   const isLoggedIn = useSelector((state) => !!state.application.authToken);
-
   const api = useMemo(() => new Api(() => token), [token]);
 
   // Fetch News
@@ -99,10 +100,25 @@ function NewsBoard() {
     setPostToDelete(null);
   }
 
+  function loadMore() {
+    setVisibleCount(prev => prev + 5);
+  }
+
 
   return (
     <div className="container my-5">
-      <ListPosts posts={posts} handlePostClick={handlePostClick} isAdmin={isAdmin} />
+      <ListPosts posts={visiblePosts} handlePostClick={handlePostClick} isAdmin={isAdmin} />
+
+      {visibleCount < posts.length && (
+        <div className="d-flex justify-content-center mt-4">
+          <button className="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm"
+            onClick={loadMore}
+          >
+            Load More
+          </button>
+        </div>
+      )}
+
 
       {showDeletePopup && (
         <div className="delete-popup-backdrop">
