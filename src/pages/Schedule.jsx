@@ -105,7 +105,7 @@ function Schedule() {
                     <h2 className="mb-4 text-center">Studio Schedule</h2>
 
                     <FullCalendar
-                      timeZone="UTC"
+                      timeZone="local"
                       plugins={[dayGridPlugin, interactionPlugin]}
                       initialView="dayGridMonth"
                       events={calendarEvents}

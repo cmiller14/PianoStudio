@@ -3,12 +3,16 @@ import { db } from '../../firebase.js';
 // Get all events (ordered by date ascending)
 export async function getEvents(req, res) {
   try {
-    const snapshot = await db.collection('scheduleEvents').orderBy('date', 'asc').get();
+    const snapshot = await db
+      .collection('scheduleEvents')
+      .orderBy('date', 'asc')
+      .get();
+
     const events = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
-      date: doc.data().date.toDate ? doc.data().date.toDate() : doc.data().date // convert Firestore Timestamp
     }));
+
     res.json(events);
   } catch (error) {
     console.error('Error fetching events:', error);
@@ -24,10 +28,10 @@ export async function addEvent(req, res) {
     const docRef = await db.collection('scheduleEvents').add({
       title,
       description,
-      date: new Date(date) // stored as Firestore Timestamp
+      date, // stored as string in local time format
     });
 
-    res.json({ id: docRef.id, title, description, date: new Date(date) });
+    res.json({ id: docRef.id, title, description, date });
   } catch (error) {
     console.error('Error adding event:', error);
     res.status(500).json({ error: 'Failed to add event' });
