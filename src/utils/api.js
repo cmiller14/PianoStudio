@@ -30,6 +30,10 @@ export class Api {
   get(url) {
     return this.makeRequest(url, "GET");
   }
+  
+  patch(url, body = {}) {
+    return this.makeRequest(url, "PATCH", body);
+  }
 
   post(url, body = {}) {
     return this.makeRequest(url, "POST", body);

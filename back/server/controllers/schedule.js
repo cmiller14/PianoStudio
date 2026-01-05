@@ -58,3 +58,38 @@ export async function deleteEvent(req, res) {
   }
 }
 
+// Update an event by ID
+export async function updateEvent(req, res) {
+  const { id } = req.params;
+  const { title, description, date } = req.body;
+
+  try {
+    const docRef = db.collection('scheduleEvents').doc(id);
+    const doc = await docRef.get();
+
+  if (!doc.exists) {
+    return res.status(404).json({ success: false, message: 'Event not found' });
+  }
+
+  // Build update object safely (no overwriting with undefined)
+  const updates = {};
+  if (title !== undefined) updates.title = title;
+  if (description !== undefined) updates.description = description;
+  if (date !== undefined) updates.date = date; // local-time string
+
+  await docRef.update(updates);
+
+  res.json({
+    success: true,
+    updated: {
+      id,
+      ...doc.data(),
+      ...updates,
+    },
+  });
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.status(500).json({ success: false, message: 'Failed to update event' });
+  }
+}
+

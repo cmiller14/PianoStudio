@@ -35,8 +35,14 @@ function Schedule() {
 }, [events]);
 
   useEffect(() => {
-    api.get(`${API_URL}/api/schedule`).then(setEvents);
+    fetchEvents();
   }, []);
+
+  const fetchEvents = async () => {
+    const data = await api.get(`${API_URL}/api/schedule`);
+    setEvents(data);
+  };
+
 
 
   const handleChange = (e) => {
@@ -44,39 +50,45 @@ function Schedule() {
   };
 
   const handleAddEvent = async () => {
-    if (!newEvent.title || !newEvent.date) return alert('Title and date are required');
-    if (recurringEvent) {
-        // Start date
-      const startDate = new Date(newEvent.date);
+    if (!newEvent.title || !newEvent.date) {
+      return alert("Title and date are required");
+    }
 
-      // Store created events
-      const createdEvents = [];
+    const createdEvents = [];
+
+    if (recurringEvent) {
+      const startDate = new Date(newEvent.date); // local time
 
       for (let i = 0; i < repeatWeeks; i++) {
-        // Make a copy of the event with the new date
+        const nextDate = new Date(startDate);
+        nextDate.setDate(startDate.getDate() + i * 7);
+
         const eventToCreate = {
           ...newEvent,
-          date: new Date(startDate.getTime() + i * 7 * 24 * 60 * 60 * 1000).toISOString(), // add i weeks
+          date: nextDate,
         };
 
-        const created = await api.post(`${API_URL}/api/schedule/add`, eventToCreate);
+        console.log('Creating recurring event for date:', eventToCreate.date);
+        const created = await api.post(
+          `${API_URL}/api/schedule/add`,
+          eventToCreate
+        );
+
         createdEvents.push(created);
       }
 
-      setEvents((prev) => [...prev, ...createdEvents]);
-      setNewEvent({ title: '', description: '', date: '' });
-      setRecurringEvent(false);
-      setRepeatWeeks(0);
-
+      setEvents(prev => [...prev, ...createdEvents]);
     } else {
+      console.log('Creating single event for date:', newEvent.date);
       const created = await api.post(`${API_URL}/api/schedule/add`, newEvent);
       setEvents(prev => [...prev, created]);
-      setNewEvent({ title: '', description: '', date: '' });
-      setRecurringEvent(false);
-      setRepeatWeeks(0);
     }
-    
+
+    setNewEvent({ title: "", description: "", date: "" });
+    setRecurringEvent(false);
+    setRepeatWeeks(0);
   };
+
 
   return (
     <>
@@ -123,7 +135,7 @@ function Schedule() {
                     />
 
                   </div>
-              {selectedEvent && <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
+              {selectedEvent && <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} onRefresh={fetchEvents} />}
               {isAdmin && isLoggedIn && (
                 <>
                   <h4>Add New Event</h4>
